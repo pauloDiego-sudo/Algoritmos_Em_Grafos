@@ -6,9 +6,21 @@ Este repositório contém implementações de diversos algoritmos em grafos que 
 
 Este projeto foi criado como parte dos estudos da disciplina de Grafos, onde estou aprendendo sobre diferentes algoritmos e suas implementações. Cada algoritmo será implementado e documentado com exemplos práticos.
 
+## Estrutura de Dados usada
+
+Para a implementação dos algoritmos, foi utilizada a estrutura de dados de Lista de Adjacências, que consiste em um array de listas, onde cada índice representa um vértice do grafo e sua lista contém os vértices adjacentes a ele. Esta estrutura é eficiente para grafos esparsos e permite uma fácil iteração sobre os vizinhos de cada vértice.
+
 ## Algoritmos Implementados
 
-- [ ] Em breve
+- [x] Verificação de Grafo Conexo
+- [x] Quantidade de Vértices em Componente Conexa
+- [x] Quantidade de Componentes Conexas
+- [x] Verificação de Grafo k-Aresta-Conexo
+- [x] Verificação de Grafo k-Vértice-Conexo
+- [x] Verificação de Floresta
+
+## Em Breve
+- [] Algoritmo de Prim
 
 ## Como Usar
 
