@@ -1,5 +1,31 @@
 #include "graph.hpp"
 
+// copy-constructor: clona todas as listas
+Graph::Graph(const Graph &other)
+  : numVertices(other.numVertices),
+    numEdges(other.numEdges),
+    maxDegree(other.maxDegree),
+    minDegree(other.minDegree),
+    isWeighted(other.isWeighted),
+    adjacencyList(other.numVertices + 1, nullptr)
+{
+    // Para cada vértice, percorre a lista original e vai clonando nó a nó
+    for (int u = 1; u <= numVertices; ++u) {
+        auto src = other.adjacencyList[u];
+        // ponteiro para inserir em adjacencyList[u]
+        std::shared_ptr<Node>* dstPtr = &adjacencyList[u];
+
+        while (src) {
+            // cria um novo Node com o mesmo valor e peso
+            *dstPtr = std::make_shared<Node>(src->vertex, src->weight);
+            // avança o ponteiro de destino para o próximo campo next
+            dstPtr = &((*dstPtr)->next);
+            // avança no fonte
+            src = src->next;
+        }
+    }
+}
+
 /**
  * @brief Calculate the degree of a vertex
  * @param vertex The vertex to calculate degree for
@@ -36,8 +62,9 @@ void Graph::updateDegrees()
 /**
  * @brief Constructor for the Graph class
  * @param vertices Number of vertices in the graph
+ * @param weighted Whether the graph is weighted
  */
-Graph::Graph(int vertices) : numVertices(vertices), numEdges(0), maxDegree(0), minDegree(0)
+Graph::Graph(int vertices, bool weighted) : numVertices(vertices), numEdges(0), maxDegree(0), minDegree(0), isWeighted(weighted)
 {
     // Initialize adjacency list with nullptr for each vertex
     adjacencyList.resize(vertices + 1, nullptr);
@@ -59,8 +86,9 @@ int Graph::addVertex()
  * @brief Add an edge to the graph
  * @param u First vertex
  * @param v Second vertex
+ * @param weight Weight of the edge (default is 1)
  */
-void Graph::addEdge(int u, int v)
+void Graph::addEdge(int u, int v, int weight)
 {
     // Check if vertices exist
     if (u > numVertices || v > numVertices)
@@ -69,13 +97,18 @@ void Graph::addEdge(int u, int v)
         return;
     }
 
+    // If graph is not weighted, ignore weight value
+    if (!isWeighted) {
+        weight = 1;
+    }
+
     // Add edge from u to v
-    auto newNode = std::make_shared<Node>(v);
+    auto newNode = std::make_shared<Node>(v, weight);
     newNode->next = adjacencyList[u];
     adjacencyList[u] = newNode;
 
     // Add edge from v to u (undirected graph)
-    newNode = std::make_shared<Node>(u);
+    newNode = std::make_shared<Node>(u, weight);
     newNode->next = adjacencyList[v];
     adjacencyList[v] = newNode;
 
@@ -149,6 +182,7 @@ void Graph::printGraph() const
     std::cout << "Size (edges): " << numEdges << std::endl;
     std::cout << "Maximum degree: " << maxDegree << std::endl;
     std::cout << "Minimum degree: " << minDegree << std::endl;
+    std::cout << "Weighted: " << (isWeighted ? "Yes" : "No") << std::endl;
     std::cout << "\nAdjacency List:" << std::endl;
 
     for (int i = 1; i <= numVertices; i++)
@@ -157,7 +191,11 @@ void Graph::printGraph() const
         auto current = adjacencyList[i];
         while (current != nullptr)
         {
-            std::cout << current->vertex << " ";
+            if (isWeighted) {
+                std::cout << current->vertex << "(" << current->weight << ") ";
+            } else {
+                std::cout << current->vertex << " ";
+            }
             current = current->next;
         }
         std::cout << std::endl;
@@ -237,48 +275,58 @@ bool Graph::removeEdge(int u, int v)
  * @param vertex The vertex to remove
  * @return true if vertex was removed, false if vertex didn't exist
  */
-bool Graph::removeVertex(int vertex)
-{
-    // Check if vertex exists
-    if (vertex > numVertices)
-    {
+bool Graph::removeVertex(int v) {
+    // 1) verifica existência
+    if (v < 1 || v > numVertices) 
         return false;
+
+    // 2) coleta vizinhos de v
+    std::vector<int> neigh;
+    for (auto curr = adjacencyList[v]; curr; curr = curr->next)
+        neigh.push_back(curr->vertex);
+
+    // 3) remove todas as arestas (v, w) usando removeEdge,
+    //    que já ajusta numEdges e degrees corretamente
+    for (int w : neigh) {
+        removeEdge(v, w);
     }
 
-    // Remove all edges incident to this vertex
-    auto current = adjacencyList[vertex];
-    while (current != nullptr)
-    {
-        int neighbor = current->vertex;
-        // Remove edge from neighbor's adjacency list
-        auto neighborCurrent = adjacencyList[neighbor];
-        std::shared_ptr<Node> prev = nullptr;
-        while (neighborCurrent != nullptr)
-        {
-            if (neighborCurrent->vertex == vertex)
-            {
-                if (prev == nullptr)
-                {
-                    adjacencyList[neighbor] = neighborCurrent->next;
-                }
-                else
-                {
-                    prev->next = neighborCurrent->next;
-                }
-                break;
-            }
-            prev = neighborCurrent;
-            neighborCurrent = neighborCurrent->next;
-        }
-        current = current->next;
-    }
+    // 4) remove a própria linha de adjacência de v
+    //    (shiftará automaticamente as posições > v)
+    adjacencyList.erase(adjacencyList.begin() + v);
 
-    // Remove the vertex from adjacency list
-    adjacencyList[vertex] = nullptr;
-
-    // Update graph properties
+    // 5) decrementa o contador de vértices
     numVertices--;
+
+    // 6) reindexa todos os nomes de vértices > v
+    for (int u = 1; u <= numVertices; ++u) {
+        for (auto curr = adjacencyList[u]; curr; curr = curr->next) {
+            if (curr->vertex > v)
+                --curr->vertex;
+        }
+    }
+
+    // 7) finalmente, recalcula min/max degree
     updateDegrees();
 
     return true;
 }
+
+/**
+ * @brief Check if the graph is weighted
+ * @return true if graph is weighted, false otherwise
+ */
+bool Graph::getIsWeighted() const
+{
+    return isWeighted;
+}
+
+/**
+ * @brief Set whether the graph is weighted
+ * @param weighted Whether the graph should be weighted
+ */
+void Graph::setIsWeighted(bool weighted)
+{
+    isWeighted = weighted;
+}
+

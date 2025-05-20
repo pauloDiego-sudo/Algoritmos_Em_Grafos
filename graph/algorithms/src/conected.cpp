@@ -4,7 +4,7 @@
 
 /**
 Complexidade temporal O(n+m)
-Complexidade espacial O(n) 
+Complexidade espacial O(n)
 
 Algoritmo conexo
 ENTRADA: Grafo G Com n vértices e m arestas
@@ -71,7 +71,7 @@ bool is_connected(const Graph &graph)
 
 /**
 Complexidade temporal O(n+m)
-Complexidade espacial O(n)  
+Complexidade espacial O(n)
 
 Algoritmo quantidade de vertices na componente conexa
 ENTRADA: Grafo G Com n vértices e m arestas e um vertice v
@@ -128,7 +128,7 @@ int vertices_amount_in_connected_component(const Graph &graph, int v)
 
 /**
 Complexidade temporal O(n+m)
-Complexidade espacial O(n)  
+Complexidade espacial O(n)
 
 Algoritmo quantidade de componentes conexas
 ENTRADA: Grafo G Com n vértices e m arestas
@@ -196,6 +196,9 @@ int connected_component_amount(const Graph &graph)
 }
 
 /***
+Complexidade temporal O(m^k)
+Complexidade espacial O(m)
+
 Algoritmo ARESTA-CONEXO
 ENTRADA: Um grafo G com n vertices e m arestas, e um inteiro k
 SAIDA: SIM se G for k-aresta-conexo, NÃO caso contrário
@@ -212,80 +215,180 @@ PARA i=1 ATÉ m:
 DEVOLVA SIM E PARE
 
  */
-bool is_k_edge_connected(Graph &graph, int k) {
-    // Obtém o número de vértices do grafo
-    int n = graph.getOrder();
-    // Obtém o número de arestas do grafo
-    int m = graph.getSize();
 
-    // Se k for maior que o grau máximo do grafo, não pode ser k-aresta-conexo
-    if (k > graph.getMaxDegree()) 
-        return false;
-    // Se o grafo já for completo (m == n*(n-1)/2), então é k-aresta-conexo para qualquer k ≤ n-1
-    if (m == n * (n - 1) / 2)          
-        return true;
-    // Caso base: 1-aresta-conexo é equivalente a simplesmente conexo
-    if (k == 1)                  
-        return is_connected(graph);
+bool is_k_edge_connected(Graph &graph, int k)
+{
+	int n = graph.getOrder();
+	int m = graph.getSize();
 
-    // Coleta todas as arestas (u,v) com u < v para evitar duplicatas
-    std::vector<std::pair<int,int>> edges;
-    for (int u = 1; u <= n; ++u) {
-        // Ponteiro para percorrer a lista de adjacência do vértice u
-        auto adj = graph.getAdjacencyList(u);
-        while (adj) {
-            // Se for aresta u→v com u < v, armazena o par
-            if (u < adj->vertex)
-                edges.emplace_back(u, adj->vertex);
-            // Avança para o próximo nó da lista
-            adj = adj->next;
-        }
-    }
+	if (k > graph.getMaxDegree())
+		return false;
 
-    // Para cada aresta coletada, remove-a, testa recursivamente e depois restaura
-    for (auto &e : edges) {
-        int u = e.first;   // primeiro vértice da aresta
-        int v = e.second;  // segundo vértice da aresta
-        // Remove a aresta (u,v) do grafo
-        graph.removeEdge(u, v);
-        // Verifica se o grafo modificado é (k-1)-aresta-conexo
-        bool ok = is_k_edge_connected(graph, k - 1);
-        // Restaura a aresta removida para manter o grafo original intacto
-        graph.addEdge(u, v);
-        // Se em alguma remoção o grafo não for (k-1)-aresta-conexo, devolve falso
-        if (!ok) 
-            return false;
-    }
-    // Se todas as remoções passaram no teste, o grafo é k-aresta-conexo
-    return true;
+	if (m == n * (n - 1) / 2)
+		return true;
+
+	if (k == 1)
+		return is_connected(graph);
+
+	for (int i = 1; i <= m; ++i)
+	{
+		Graph g = graph;
+		// We need to find the actual edge vertices first
+		std::vector<std::pair<int, int>> edges;
+		for (int u = 1; u <= n; ++u)
+		{
+			auto adj = graph.getAdjacencyList(u);
+			while (adj)
+			{
+				if (u < adj->vertex)
+					edges.emplace_back(u, adj->vertex);
+				adj = adj->next;
+			}
+		}
+		// Now use the actual vertices to remove the edge
+		g.removeEdge(edges[i - 1].first, edges[i - 1].second);
+		if (!is_k_edge_connected(g, k - 1))
+			return false;
+	}
+	return true;
 }
 
+/***
+Complexidade temporal O(n^(k+1))
+Complexidade espacial O(n)
 
-// bool is_k_edge_connected(const Graph &graph, int k)
-// {
-// 	if(k > graph.getMaxDegree())
-// 		return false;
-// 	if(graph.getSize() == graph.getOrder() * (graph.getOrder() - 1) / 2)
-// 		return true;
-// 	if(k == 1)
-// 		return is_connected(graph);
-	
-// 	// Iterate through all vertices
-// 	for(int i = 1; i <= graph.getOrder(); i++) {
-// 		auto current = graph.getAdjacencyList(i);
-// 		// Iterate through all edges of vertex i
-// 		while(current != nullptr) {
-// 			int j = current->vertex;
-// 			// Only process each edge once (i < j)
-// 			if(i < j) {
-// 				Graph g_prime = graph;
-// 				g_prime.removeEdge(i, j);
-// 				if(!is_k_edge_connected(g_prime, k - 1))
-// 					return false;
-// 			}
-// 			current = current->next;
-// 		}
-// 	}
-// 	return true;
-// }
+Algoritmo VERTICE-CONEXO
+ENTRADA: Um grafo G com n vertices e m arestas, e um inteiro k
+SAIDA: SIM se G for k-vertice-conexo, NÃO caso contrário
 
+SE G FOR COMPLETO DEVOLVA SIM E PARE
+SE k > deltinha(G) DEVOLVA NÂO E PARE
+SE k=1 DEVOLVA CONEXO(G) E PARE
+
+PARA i=1 ATÉ n:
+	G' = G - {Vertice i}
+	SE VERTICE-CONEXO(G',k-1) = NÃO
+		DEVOLVA NÃO E PARE
+
+DEVOLVA SIM E PARE
+
+ */
+
+bool is_k_vertex_connected(Graph &graph, int k)
+{
+	int n = graph.getOrder();
+	int m = graph.getSize();
+
+	if (m == n * (n - 1) / 2)
+		return true;
+
+	if (k > graph.getMinDegree())
+		return false;
+
+	if (k == 1)
+		return is_connected(graph);
+
+	for (int v = 1; v <= n; ++v)
+	{
+		Graph g = graph;
+		g.removeVertex(v);
+		if (!is_k_vertex_connected(g, k - 1))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ Algoritmo Floresta
+ ENTRADA: Um grafo G com n vertices e m arestas
+ SAIDA: SIM, se G for uma floresta, NÂO, caso contrário
+
+ SE n=0 DEVOLVA SIM E PARE
+ SE m >= n DEVOLVA NÃO E PARE
+
+ PARA i=1 ATÉ n:
+	visitado[i]=FALSO
+	anterior[i]=0
+
+CRIE UMA FILA F COM n POSIÇÕES
+ENQUANTO EXISTIR VERTICE V TAL QUE visitado[v]=falso
+	visitado[v]=verdadeiro
+	INSIRA v EM F
+	ENQUANTO F NÃO FOR VAZIA
+		REMOVA DE F OBTENDO u
+		PARA CADA VERTICE w ADJASCENTE A u
+			SE anterior[u] != w
+				SE visitado[w] = verdaeiro
+					DEVOLVA NÂO E PARE
+				SENÃo
+					visitado[w]=verdadeiro
+					anterior[w]=u
+					INSIRA w EM F
+DEVOLVA SIM
+
+ */
+
+bool is_forest(Graph &graph)
+{
+	// Obtém o número de vértices e arestas
+	int n = graph.getOrder();
+	int m = graph.getSize();
+
+	// Se o grafo está vazio, é uma floresta
+	if (n == 0)
+		return true;
+
+	// Se tem mais arestas que vértices, não é uma floresta
+	if (m >= n)
+		return false;
+
+	// Inicializa vetores de visitados e anteriores
+	vector<bool> visited(n + 1, false);
+	vector<int> previous(n + 1, 0);
+	queue<int> q;
+
+	// Para cada vértice não visitado, inicia uma BFS
+	for (int i = 1; i <= n; ++i)
+	{
+		if (!visited[i])
+		{
+			// Marca o vértice como visitado
+			visited[i] = true;
+			q.push(i);
+
+			// BFS para detectar ciclos
+			while (!q.empty())
+			{
+				int u = q.front();
+				q.pop();
+
+				// Percorre todos os vértices adjacentes
+				auto current = graph.getAdjacencyList(u);
+				while (current != nullptr)
+				{
+					int w = current->vertex;
+					// Se não é o vértice anterior
+					if (previous[u] != w)
+					{
+						// Se já foi visitado, existe um ciclo
+						if (visited[w])
+						{
+							return false;
+						}
+						else
+						{
+							visited[w] = true;
+							previous[w] = u;
+							q.push(w);
+						}
+					}
+					current = current->next;
+				}
+			}
+		}
+	}
+	// Se não encontrou ciclos, é uma floresta
+	return true;
+}

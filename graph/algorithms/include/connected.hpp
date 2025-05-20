@@ -36,4 +36,19 @@ int connected_component_amount(const Graph& graph);
  */
 bool is_k_edge_connected(Graph& graph, int k);
 
+/**
+ * @brief Checks if an undirected graph is k-vertex-connected
+ * @param graph The graph to check
+ * @param k The number of vertices to remove
+ * @return true if the graph is k-vertex-connected, false otherwise
+ */
+bool is_k_vertex_connected(Graph& graph, int k);
+
+/**
+ * @brief Checks if an undirected graph is a forest
+ * @param graph The graph to check
+ * @return true if the graph is a forest, false otherwise (means it has cycles)
+ */
+bool is_forest(Graph& graph);
+
 #endif // GRAPH_CONNECTED_HPP

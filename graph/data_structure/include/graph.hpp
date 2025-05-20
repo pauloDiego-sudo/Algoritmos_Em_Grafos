@@ -11,9 +11,10 @@
  */
 struct Node {
     int vertex;    // The vertex that makes an edge with the vertex of its list index
+    int weight;    // Weight of the edge (default is 1 for unweighted graphs)
     std::shared_ptr<Node> next;  // Pointer to the next node in the list
 
-    Node(int v) : vertex(v), next(nullptr) {}
+    Node(int v, int w = 1) : vertex(v), weight(w), next(nullptr) {}
 };
 
 /**
@@ -26,6 +27,7 @@ private:
     int numEdges;       // Size of the graph
     int maxDegree;      // Maximum degree of any vertex
     int minDegree;      // Minimum degree of any vertex
+    bool isWeighted;    // Flag to indicate if the graph is weighted
 
     /**
      * @brief Calculate the degree of a vertex
@@ -43,8 +45,15 @@ public:
     /**
      * @brief Constructor for the Graph class
      * @param vertices Number of vertices in the graph
+     * @param weighted Whether the graph is weighted
      */
-    Graph(int vertices = 0);
+    Graph(int vertices = 0, bool weighted = false);
+
+    /**
+     * @brief Copy constructor for the Graph class
+     * @param other The graph to copy
+     */
+    Graph(const Graph &other);
 
     /**
      * @brief Add a new isolated vertex to the graph
@@ -56,8 +65,9 @@ public:
      * @brief Add an edge to the graph
      * @param u First vertex
      * @param v Second vertex
+     * @param weight Weight of the edge (default is 1)
      */
-    void addEdge(int u, int v);
+    void addEdge(int u, int v, int weight = 1);
 
     /**
      * @brief Get the order of the graph (number of vertices)
@@ -111,6 +121,18 @@ public:
      * @return true if vertex was removed, false if vertex didn't exist
      */
     bool removeVertex(int vertex);
+    
+    /**
+     * @brief Check if the graph is weighted
+     * @return true if graph is weighted, false otherwise
+     */
+    bool getIsWeighted() const;
+    
+    /**
+     * @brief Set whether the graph is weighted
+     * @param weighted Whether the graph should be weighted
+     */
+    void setIsWeighted(bool weighted);
 
     /**
      * @brief Print the graph structure and properties
