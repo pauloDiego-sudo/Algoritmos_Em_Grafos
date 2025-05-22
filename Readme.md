@@ -18,6 +18,7 @@ Para a implementação dos algoritmos, foi utilizada a estrutura de dados de Lis
 - [x] Verificação de Grafo k-Aresta-Conexo
 - [x] Verificação de Grafo k-Vértice-Conexo
 - [x] Verificação de Floresta
+- [x] Árvore Geradora Minima (Algoritmo de Kruskal)
 
 ## Em Breve
 - [] Algoritmo de Prim
