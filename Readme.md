@@ -19,9 +19,11 @@ Para a implementação dos algoritmos, foi utilizada a estrutura de dados de Lis
 - [x] Verificação de Grafo k-Vértice-Conexo
 - [x] Verificação de Floresta
 - [x] Árvore Geradora Minima (Algoritmo de Kruskal)
+- [x] Algoritmo de Prim
+- [x] Algoritmo de Dijkstra em C
 
 ## Em Breve
-- [] Algoritmo de Prim
+- [O] Algoritmo de Fleury (Trilhas de Euler)
 
 ## Como Usar
 
