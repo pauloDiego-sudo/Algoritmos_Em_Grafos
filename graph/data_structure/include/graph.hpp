@@ -5,18 +5,9 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include "myDS.hpp"
 
-/**
- * @brief Node structure for the adjacency list
- */
-struct Node {
-    int vertex;    // The vertex that makes an edge with the vertex of its list index
-    int weight;    // Weight of the edge (default is 1 for unweighted graphs)
-    std::shared_ptr<Node> next;  // Pointer to the next node in the list
-
-    Node(int v, int w = 1) : vertex(v), weight(w), next(nullptr) {}
-};
-
+using namespace MyDataStructures;
 /**
  * @brief Graph class using adjacency list representation
  */

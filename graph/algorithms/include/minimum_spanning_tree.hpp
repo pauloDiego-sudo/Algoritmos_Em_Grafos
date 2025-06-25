@@ -4,44 +4,12 @@
 #include <vector>
 #include "../../data_structure/include/graph.hpp"
 #include <limits.h>
+#include "myDS.hpp"
 
 #define INF INT_MAX
 
-using namespace std;
+using namespace MyDataStructures;
 
-/**
- * @brief Structure to represent an edge in the graph
- */
-struct Edge {
-    int u;      // First vertex
-    int v;      // Second vertex
-    int weight; // Weight of the edge
-
-    Edge(int u, int v, int weight) : u(u), v(v), weight(weight) {}
-};
-
-// Union-Find (Disjoint Set Union)
-class UnionFind {
-    vector<int> parent, rank;
-public:
-    UnionFind(int n) : parent(n + 1), rank(n + 1, 0) {
-        for (int i = 1; i <= n; ++i) parent[i] = i;
-    }
-    int find(int x) {
-        if (parent[x] != x)
-            parent[x] = find(parent[x]); // Path compression
-        return parent[x];
-    }
-    void unite(int x, int y) {
-        int rx = find(x), ry = find(y);
-        if (rx == ry) return;
-        if (rank[rx] < rank[ry]) parent[rx] = ry;
-        else {
-            parent[ry] = rx;
-            if (rank[rx] == rank[ry]) rank[rx]++;
-        }
-    }
-};
 
 //print the mst
 void print_mst(const std::vector<Edge>& mst);
