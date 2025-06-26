@@ -6,11 +6,7 @@
 #include "myDS.hpp"
 using namespace MyDataStructures;
 
-bool isEulerian(const Graph &graph);
-
-
-
-
+EulerianTrailProperties getEulerianPropetiesOfGraph(const Graph &graph);
 
 #endif // TRACKS_HPP
 

@@ -1,9 +1,10 @@
-#include "tracks.hpp"
+#include "trails.hpp"
 #include <functional>
 
-bool isEulerian(const Graph &graph) {
+EulerianTrailProperties getEulerianPropetiesOfGraph(const Graph &graph) {
     // An undirected graph is Eulerian if all vertices with nonzero degree have even degree, or if the graph has exactaly 2 vertices with odd degree
     // and all vertices with nonzero degree are connected.
+    EulerianTrailProperties properties;
     int oddDegreeCount = 0;
     int n = graph.getOrder();
     int nonZeroDegreeVertex = -1;
@@ -17,18 +18,24 @@ bool isEulerian(const Graph &graph) {
     }
     if (nonZeroDegreeVertex == -1) {
         // No edges in the graph
-        return false;
+        // return false;
+        properties.isEulerian = false;
+        return properties;
     }
 
     // Check all vertices have even degree
     for (int i = 0; i < n; ++i) {
         if (graph.getVertexDegree(i) % 2 != 0) {
             oddDegreeCount++;
+            oddDegreeCount == 1 ? properties.startTAE = i : properties.endTAE = i;
         }
     }
 
-    if (oddDegreeCount > 0 && oddDegreeCount != 2) {
-        return false;
+    if (oddDegreeCount != 2 && oddDegreeCount != 0) {
+        properties.isEulerian = false; // More than 2 vertices with odd degree
+        // properties.hasTAE = false; // No TAE trail
+        // properties.hasTFE = false; // No TFE trail
+        return properties;
     }
 
     // Check if all nonzero degree vertices are connected
@@ -62,12 +69,16 @@ bool isEulerian(const Graph &graph) {
     };
     
     dfs(nonZeroDegreeVertex);
+    properties.startTFE = nonZeroDegreeVertex;
 
     for (int i = 0; i < n; ++i) {
         if (graph.getVertexDegree(i) > 0 && !visited[i]) {
-            return false;
+            properties.isEulerian = false; // Found a nonzero degree vertex that is not connected
+            return properties;
         }
     }
 
-    return true;
+    properties.isEulerian = true; // All conditions for Eulerian trail are satisfied
+    oddDegreeCount == 0 ? properties.hasTFE = true : properties.hasTAE = true;
+    return properties;
 }

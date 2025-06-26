@@ -35,10 +35,19 @@ namespace MyDataStructures
         Edge(int u, int v, int weight) : u(u), v(v), weight(weight) {}
     };
 
-    struct EulerianTrack
+    struct EulerianTrailProperties
     {
-        // int startVertex;    // Start of the Eulerian Track
-        // int endVertex; //End of the Eulerian Track
+        bool isEulerian; // True if the graph has an Eulerian trail
+        bool hasTFE; // True if the graph has a TFE (Trail Fechada de Euler) trail
+        bool hasTAE; // True if the graph has a TAE (Trilha Aberta de Euler) trail
+        int startTFE; // Start vertex of the TFE trail
+        int startTAE; // Start vertex of the TAE trail
+        int endTAE;   // End vertex of the TAE trail
+
+        EulerianTrailProperties() : isEulerian(false), hasTFE(false), hasTAE(false), startTAE(-1), endTAE(-1) {}
+
+        // int startVertex;    // Start of the Eulerian Trail
+        // int endVertex; //End of the Eulerian Trail
         // std::shared_ptr<Node> next;  // Pointer to the next node in the list
 
         // EulerianTrack(int vS, int vE) : startVertex(vS), endVertex(vE), next(nullptr) {}

@@ -25,17 +25,36 @@ Para a implementação dos algoritmos, foi utilizada a estrutura de dados de Lis
 ## Em Breve
 - [O] Algoritmo de Fleury - Trilhas de Euler
 
-## Como Usar
+## Como buildar
+### Windows
+1. Instale o CMake e o compilador C/C++ (como MinGW).
+2. Abra o terminal na pasta raiz do projeto.
+3. Execute o script `build.bat` para compilar o projeto.
+### Linux
+1. Instale o CMake e o compilador C/C++ (como g++).
+2. Abra o terminal na pasta raiz do projeto.
+3. Crie uma pasta `build` e entre nela:
+   ```bash
+   mkdir build && cd build
+   ```
+4. Especifique o seu compilador C/C++:
+   ```bash
+   cmake -G "Unix Makefiles" ..
+   ```
+5. Compile o projeto:
+   ```bash
+    cmake --build .
+   ```
+## Como Executar
+Após compilar o projeto, você pode executar os exemplos de uso dos algoritmos. Cada algoritmo possui um exemplo específico que pode ser encontrado na pasta `data/input`. O comando para executar o programa é:
 
-Cada algoritmo terá sua própria pasta com:
-- Implementação do código
-- Exemplos de uso
-- Documentação explicativa
-- Casos de teste
+```bash
+graph.exe <input_file_path> <weigthed?_true_or_false>
+```
 
 ## Tecnologias Utilizadas
 
-- C++
+- C, C++, CMake
 
 ## Contribuições
 

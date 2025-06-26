@@ -3,6 +3,7 @@
 #include "data_structure/include/graph.hpp"
 #include "algorithms/include/connected.hpp"
 #include "algorithms/include/minimum_spanning_tree.hpp"
+#include "algorithms/include/trails.hpp"
 using namespace std;
 
 int main(int argc, char const *argv[])
@@ -97,5 +98,20 @@ int main(int argc, char const *argv[])
         print_mst(mst_prim_naive);
         cout << "-------------------------------------------------------" << endl;
     }
+    // Check if the graph has an Eulerian trail
+    EulerianTrailProperties properties = getEulerianPropetiesOfGraph(graph);
+    if (properties.isEulerian)
+    {
+        cout << "O grafo possui uma trilha Euleriana." << endl;
+        if (properties.hasTFE){
+            cout << "O grafo possui uma Trilha Fechada de Euler (TFE)." << endl;
+            cout << "A TFE comeca no vertice " << properties.startTFE << "." << endl;
+        }
+        if (properties.hasTAE){
+            cout << "O grafo possui uma Trilha Aberta de Euler (TAE)." << endl;
+            cout << "A TAE comeca no vertice " << properties.startTAE << " e termina no vertice " << properties.endTAE << "." << endl;
+        }
+    }        
+
     return 0;
 }
