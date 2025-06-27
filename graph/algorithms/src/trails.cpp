@@ -1,7 +1,8 @@
 #include "trails.hpp"
-#include <functional>
 
-EulerianTrailProperties getEulerianPropetiesOfGraph(const Graph &graph) {
+
+EulerianTrailProperties getEulerianPropetiesOfGraph(const Graph &graph)
+{
     // An undirected graph is Eulerian if all vertices with nonzero degree have even degree, or if the graph has exactaly 2 vertices with odd degree
     // and all vertices with nonzero degree are connected.
     EulerianTrailProperties properties;
@@ -9,14 +10,17 @@ EulerianTrailProperties getEulerianPropetiesOfGraph(const Graph &graph) {
     int n = graph.getOrder();
     int nonZeroDegreeVertex = -1;
 
-    // Find a vertex with nonzero degree to start DFS
-    for (int i = 0; i < n; ++i) {
-        if (graph.getVertexDegree(i) > 0) {
+    // Find a vertex with nonzero degree to start bfs
+    for (int i = 0; i < n; ++i)
+    {
+        if (graph.getVertexDegree(i) > 0)
+        {
             nonZeroDegreeVertex = i;
             break;
         }
     }
-    if (nonZeroDegreeVertex == -1) {
+    if (nonZeroDegreeVertex == -1)
+    {
         // No edges in the graph
         // return false;
         properties.isEulerian = false;
@@ -24,14 +28,17 @@ EulerianTrailProperties getEulerianPropetiesOfGraph(const Graph &graph) {
     }
 
     // Check all vertices have even degree
-    for (int i = 0; i < n; ++i) {
-        if (graph.getVertexDegree(i) % 2 != 0) {
+    for (int i = 0; i < n; ++i)
+    {
+        if (graph.getVertexDegree(i) % 2 != 0)
+        {
             oddDegreeCount++;
             oddDegreeCount == 1 ? properties.startTAE = i : properties.endTAE = i;
         }
     }
 
-    if (oddDegreeCount != 2 && oddDegreeCount != 0) {
+    if (oddDegreeCount != 2 && oddDegreeCount != 0)
+    {
         properties.isEulerian = false; // More than 2 vertices with odd degree
         // properties.hasTAE = false; // No TAE trail
         // properties.hasTFE = false; // No TFE trail
@@ -39,40 +46,14 @@ EulerianTrailProperties getEulerianPropetiesOfGraph(const Graph &graph) {
     }
 
     // Check if all nonzero degree vertices are connected
-    std::vector<bool> visited(n, false);
-    std::function<void(int)> dfs = [&](int v) {
-        visited[v] = true;
-      	queue<int> queue;
-        queue.push(v);
-        while (!queue.empty())
-        {
-            int u = queue.front();
-            queue.pop();
-            auto current = graph.getAdjacencyList(u);
-            // Fazendo a travecia na lista ligada
-            while (current != nullptr)
-            {
-                int w = current->vertex;
-                current = current->next;
-                if (visited[w] == false)
-                {
-                    visited[w] = true;
-                    queue.push(w);
-                }
-            }
-        }
-        // for (int u : graph.getAdjacencyList(v)) {
-        //     if (!visited[u]) {
-        //         dfs(u);
-        //     }
-        // }
-    };
-    
-    dfs(nonZeroDegreeVertex);
+    vector<bool> visited(n, false);
+    bfs(graph,nonZeroDegreeVertex,visited);
+   
     properties.startTFE = nonZeroDegreeVertex;
-
-    for (int i = 0; i < n; ++i) {
-        if (graph.getVertexDegree(i) > 0 && !visited[i]) {
+    for (int i = 0; i < n; ++i)
+    {
+        if (graph.getVertexDegree(i) > 0 && !visited[i])
+        {
             properties.isEulerian = false; // Found a nonzero degree vertex that is not connected
             return properties;
         }
@@ -81,4 +62,41 @@ EulerianTrailProperties getEulerianPropetiesOfGraph(const Graph &graph) {
     properties.isEulerian = true; // All conditions for Eulerian trail are satisfied
     oddDegreeCount == 0 ? properties.hasTFE = true : properties.hasTAE = true;
     return properties;
+}
+
+vector<Edge> fleury_algorithm(const Graph &graph, EulerianTrailProperties &properties)
+{
+    vector<Edge> trail;      // Keeps edges in order of traversal
+    Graph graphCopy = graph; // Cópia para manipulação
+    int startVertex = properties.hasTAE ? properties.startTAE : properties.startTFE;
+    int currentVertex = startVertex;
+
+    while (graphCopy.getVertexDegree(currentVertex) > 0)
+    {
+        // Procura uma aresta que não seja ponte
+        auto adj = graphCopy.getAdjacencyList(currentVertex);
+        int nextVertex = -1;
+        while (adj != nullptr)
+        {
+            int candidate = adj->vertex;
+            // Se só existe uma aresta, tem que ser ela
+            if (graphCopy.getVertexDegree(currentVertex) == 1 || !isBridge(graphCopy, currentVertex, candidate))
+            {
+                nextVertex = candidate;
+                break;
+            }
+            adj = adj->next;
+        }
+        if (nextVertex == -1)
+            break; // Nenhuma aresta disponível
+
+        // Adiciona a aresta ao trilha
+        trail.push_back(Edge(currentVertex, nextVertex, 1));
+        // Remove a aresta do grafo
+        graphCopy.removeEdge(currentVertex, nextVertex);
+        // Avança para o próximo vértice
+        currentVertex = nextVertex;
+    }
+
+    return trail;
 }

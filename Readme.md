@@ -21,9 +21,14 @@ Para a implementação dos algoritmos, foi utilizada a estrutura de dados de Lis
 - [x] Algoritmo de Kruskal- Árvore Geradora Minima
 - [x] Algoritmo de Prim - Árvore Geradora Minima
 - [x] Algoritmo de Dijkstra em C - Caminho mínimo em grafos dirigidos
+- [x] Algoritmo de Fleury - Trilhas de Euler
 
-## Em Breve
-- [O] Algoritmo de Fleury - Trilhas de Euler
+### Em Breve
+- [ ] TALVEZ K-COLORAÇÃO DE ARESTAS E VERTICES
+
+### Pseudocódigos
+- [Algoritmos Pseudocódigos](graph/algorithms/pseudocodes/codes.md)
+
 
 ## Como buildar
 ### Windows
@@ -51,6 +56,33 @@ Após compilar o projeto, você pode executar os exemplos de uso dos algoritmos.
 ```bash
 graph.exe <input_file_path> <weigthed?_true_or_false>
 ```
+
+## Formato dos Arquivos de Entrada
+Os arquivos de entrada devem conter a seguinte estrutura:
+### Para grafos não ponderados:
+Deve-se informar o número de vértices (n) e arestas (m), seguido pelas arestas do grafo (uv). Cada aresta é representada por dois números inteiros que indicam os vértices conectados.
+```latex
+n m
+u_1 v_1
+u_2 v_2
+...
+u_i v_i
+...
+u_m v_m
+```
+### Para grafos ponderados:
+Deve-se informar o número de vértices (n) e arestas (m), seguido pelas arestas do grafo (uv) e seu custo (c). Cada aresta é representada por dois números inteiros que indicam os vértices conectados.
+```latex
+n m
+u_1 v_1 c_1
+u_2 v_2 c_2
+...
+u_i v_i c_i
+...
+u_m v_m c_m
+```
+### Obervações
+- Com o parâmetro `weigthed?_true_or_false`, você pode especificar se o grafo é ponderado ou não. Se for ponderado, deve-se informar o custo de cada aresta.
 
 ## Tecnologias Utilizadas
 

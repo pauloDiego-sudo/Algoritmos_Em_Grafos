@@ -2,31 +2,6 @@
 #include <queue>
 #include "connected.hpp"
 
-/**
-Complexidade temporal O(n+m)
-Complexidade espacial O(n)
-
-Algoritmo conexo
-ENTRADA: Grafo G Com n vértices e m arestas
-SAIDA: Verdadeiro se G é conexo, Falso caso contrário
-
-SE n <= 1 DEVOLVA Verdadeiro E PARE
-PARA i=2 ATÉ n:
-	visitado[i] = Falso
-visitado[1] = Verdadeiro
-CRIE UMA FILA F COM N POSIÇÕES
-INSIRA O VERTICE 1 NA FILA
-ENQUANTO F NÃO FOR VAZIA:
-	REMOVA DE F OBTENDO u
-	PARA CADA VERTICE w ADJASCENTE A u
-		SE visitado[w] == Falso
-			visitado[w] = verdadeiro
-			INSIRA w EM F
-SE EXISTIR VERTICE V TAL QUE visitado[V] == Falso
-	DEVOLVA Verdadeiro E PARE
-SENÃO
-	DEVOLVA Falso
- */
 using namespace std;
 
 bool is_connected(const Graph &graph)
@@ -69,29 +44,6 @@ bool is_connected(const Graph &graph)
 	return true;
 }
 
-/**
-Complexidade temporal O(n+m)
-Complexidade espacial O(n)
-
-Algoritmo quantidade de vertices na componente conexa
-ENTRADA: Grafo G Com n vértices e m arestas e um vertice v
-SAIDA: A quantidade de vertices na componente conexa de v
-
-PARA i=1 ATÉ n:
-	visitado[i] = Falso
-visitado[v] = Verdadeiro
-CRIE UMA FILA F COM N POSIÇÕES
-INSIRA O VERTICE v NA FILA
-FAÇA COUNT=1
-ENQUANTO F NÃO FOR VAZIA:
-	REMOVA DE F OBTENDO u
-	PARA CADA VERTICE w ADJASCENTE A u
-		SE visitado[w] == Falso
-			visitado[w] = verdadeiro
-			INSIRA w EM F
-			COUNT++
-DEVOLVA COUNT
- */
 int vertices_amount_in_connected_component(const Graph &graph, int v)
 {
 	int n = graph.getOrder();
@@ -126,33 +78,6 @@ int vertices_amount_in_connected_component(const Graph &graph, int v)
 	return count;
 }
 
-/**
-Complexidade temporal O(n+m)
-Complexidade espacial O(n)
-
-Algoritmo quantidade de componentes conexas
-ENTRADA: Grafo G Com n vértices e m arestas
-SAIDA: A quantidade de componentes conexas em G
-
-FAÇA COUNT=0
-PARA i=1 ATÉ n:
-	visitado[i] = Falso
-CRIE UMA FILA F COM N POSIÇÕES
-
-PARA i=1 ATÈ n:
-	SE visitado[i]=Falso
-		COUNT++
-		INSIRA O VERTICE i NA FILA F
-		visitado[i] = Verdadeiro
-
-		ENQUANTO F NÃO FOR VAZIA:
-			REMOVA DE F OBTENDO u
-			PARA CADA VERTICE w ADJASCENTE A u
-				SE visitado[w] == Falso
-					visitado[w] = verdadeiro
-					INSIRA w EM F
-DEVOLVA COUNT
-**/
 int connected_component_amount(const Graph &graph)
 {
 
@@ -195,27 +120,6 @@ int connected_component_amount(const Graph &graph)
 	return count;
 }
 
-/***
-Complexidade temporal O(m^k)
-Complexidade espacial O(m)
-
-Algoritmo ARESTA-CONEXO
-ENTRADA: Um grafo G com n vertices e m arestas, e um inteiro k
-SAIDA: SIM se G for k-aresta-conexo, NÃO caso contrário
-
-SE k > deltinha(G) DEVOLVA NÂO E PARE
-SE G FOR COMPLETO DEVOLVA SIM E PARE
-SE k=1 DEVOLVA CONEXO(G) E PARE
-
-PARA i=1 ATÉ m:
-	G' = G - {Aresta i}
-	SE ARESTA-CONEXO(G',k-1) = NÃO
-		DEVOLVA NÃO E PARE
-
-DEVOLVA SIM E PARE
-
- */
-
 bool is_k_edge_connected(Graph &graph, int k)
 {
 	int n = graph.getOrder();
@@ -253,27 +157,6 @@ bool is_k_edge_connected(Graph &graph, int k)
 	return true;
 }
 
-/***
-Complexidade temporal O(n^(k+1))
-Complexidade espacial O(n)
-
-Algoritmo VERTICE-CONEXO
-ENTRADA: Um grafo G com n vertices e m arestas, e um inteiro k
-SAIDA: SIM se G for k-vertice-conexo, NÃO caso contrário
-
-SE G FOR COMPLETO DEVOLVA SIM E PARE
-SE k > deltinha(G) DEVOLVA NÂO E PARE
-SE k=1 DEVOLVA CONEXO(G) E PARE
-
-PARA i=1 ATÉ n:
-	G' = G - {Vertice i}
-	SE VERTICE-CONEXO(G',k-1) = NÃO
-		DEVOLVA NÃO E PARE
-
-DEVOLVA SIM E PARE
-
- */
-
 bool is_k_vertex_connected(Graph &graph, int k)
 {
 	int n = graph.getOrder();
@@ -299,36 +182,6 @@ bool is_k_vertex_connected(Graph &graph, int k)
 	}
 	return true;
 }
-
-/**
- Algoritmo Floresta
- ENTRADA: Um grafo G com n vertices e m arestas
- SAIDA: SIM, se G for uma floresta, NÂO, caso contrário
-
- SE n=0 DEVOLVA SIM E PARE
- SE m >= n DEVOLVA NÃO E PARE
-
- PARA i=1 ATÉ n:
-	visitado[i]=FALSO
-	anterior[i]=0
-
-CRIE UMA FILA F COM n POSIÇÕES
-ENQUANTO EXISTIR VERTICE V TAL QUE visitado[v]=falso
-	visitado[v]=verdadeiro
-	INSIRA v EM F
-	ENQUANTO F NÃO FOR VAZIA
-		REMOVA DE F OBTENDO u
-		PARA CADA VERTICE w ADJASCENTE A u
-			SE anterior[u] != w
-				SE visitado[w] = verdaeiro
-					DEVOLVA NÂO E PARE
-				SENÃo
-					visitado[w]=verdadeiro
-					anterior[w]=u
-					INSIRA w EM F
-DEVOLVA SIM
-
- */
 
 bool is_forest(Graph &graph)
 {

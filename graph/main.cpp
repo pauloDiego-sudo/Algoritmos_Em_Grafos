@@ -111,7 +111,16 @@ int main(int argc, char const *argv[])
             cout << "O grafo possui uma Trilha Aberta de Euler (TAE)." << endl;
             cout << "A TAE comeca no vertice " << properties.startTAE << " e termina no vertice " << properties.endTAE << "." << endl;
         }
-    }        
-
+        vector<Edge> eulerianTrail = fleury_algorithm(graph, properties);
+        cout << "A trilha Euleriana encontrada e: " << endl;
+        for (const Edge& edge : eulerianTrail) {
+            cout << edge.u << " -> " << edge.v << endl;
+        }
+    }
+    else
+    {
+        cout << "O grafo nao possui uma trilha Euleriana." << endl;
+    }
+    
     return 0;
 }

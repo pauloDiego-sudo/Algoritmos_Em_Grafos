@@ -12,22 +12,6 @@ void print_mst(const vector<Edge> &mst)
     }
 }
 
-/**
- Complexidade Temporal: O(n*m)
-
- Algoritmo de Kruskal
- ENTRADA: Um grafo conexo G com n vertices e m arestas, onde cada aresta tem um custo
- SAIDA: Um conjunto de arestas T tal que G[T] é uma arvore geradora minima de G
-
- T = {}
- i = 1
- COLOQUE AS ARESTAS DE G EM ORDEM CRESCENTE DE CUSTO
- ENQUANTO |T| < n-1:
-    SE G[T U {aresta_i}] FOR ACICLICO
-        T = T U {aresta_i}
-    i++
-DEVOLVA T
- */
 vector<Edge> kruskal_mst_naive(const Graph &graph)
 {
     int n = graph.getOrder();
@@ -198,20 +182,6 @@ vector<Edge> kruskal_mst(const Graph &graph)
     }
     return T;
 }
-
-/***
- Algoritmo de Prim
- ENTRADA: Um grafo conexo G com n vertices e m arestas, onde cada aresta tem um custo
- SAIDA: Um conjunto de arestas T tal que G[T] é uma AGM de G
-
- T = {}
- Z = {Vertice 1}
- ENQUANTO EXISTIR VERTICE V NA FRONTEIRA DE Z
-    SEJA uv UMA ARESTA NA FRONTEIRA DE Z ONDE u ∈ Z e v ∉ Z, CUJO CUSTO É MINIMO
-    T = T U {Aresta uv}
-    Z = Z U {Vertice v}
-DEVOLVA T
- */
 
 vector<Edge> prim_mst_naive(const Graph &graph)
 {
